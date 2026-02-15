@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import type { CartItem, Product } from "../types/product";
 
 type CartContextType = {
@@ -7,8 +8,8 @@ type CartContextType = {
   openCart: () => void;
   closeCart: () => void;
   addToCart: (product: Product, color?: string, size?: string) => void;
-  updateItem: (index: number, item: CartItem) => void;
-  removeItem: (index: number) => void;
+  updateItem: (id: string, item: CartItem) => void;
+  removeItem: (id: string) => void;
 };
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -26,22 +27,24 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       selectedColor: color,
       selectedSize: size,
       quantity: 1,
+      id: uuidv4(), // unique id for each cart item
     };
 
     setCart((prev) => [...prev, newItem]);
     setIsOpen(true);
 
+    // Alert message
     alert(`${product.name} added to cart`);
   };
 
-  const updateItem = (index: number, item: CartItem) => {
-    const updated = [...cart];
-    updated[index] = item;
-    setCart(updated);
+  const updateItem = (id: string, updatedItem: CartItem) => {
+    setCart((prev) =>
+      prev.map((item) => (item.id === id ? updatedItem : item)),
+    );
   };
 
-  const removeItem = (index: number) => {
-    setCart(cart.filter((_, i) => i !== index));
+  const removeItem = (id: string) => {
+    setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
   return (
@@ -61,6 +64,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+// Custom hook
 // eslint-disable-next-line react-refresh/only-export-components
 export const useCart = () => {
   const context = useContext(CartContext);
