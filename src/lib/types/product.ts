@@ -8,7 +8,8 @@ export type Product = {
 };
 
 export type CartItem = Product & {
+  quantity: number;
   selectedColor?: string;
   selectedSize?: string;
-  quantity: number;
+  id: string;
 };
