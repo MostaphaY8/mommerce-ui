@@ -1,99 +1,293 @@
-# React + TypeScript + Vite
+📦 Overview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Mommerce UI is a reusable ecommerce component library designed to:
 
-Currently, two official plugins are available:
+Provide modular ecommerce UI components
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Separate reusable logic from demo implementation
 
-## React Compiler
+Allow flexible product card rendering
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Support scalable architecture for future growth
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
-
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+The project is structured as a UI library (lib) + demo store (demo) inside the same Vite project.
 
 mommerce-ui/
 │
 ├── src/
-│ ├── lib/ ← 🔥 reusable library
-│ │ ├── components/
+│ ├── lib/ # Reusable ecommerce UI library
+│ │ ├── components/ # UI components
 │ │ │ ├── product/
 │ │ │ ├── cart/
+│ │ │ ├── layout/
 │ │ │ ├── checkout/
 │ │ │
-│ │ ├── context/
-│ │ ├── hooks/
-│ │ ├── types/
-│ │ └── index.ts ← library exports
+│ │ ├── context/ # Global state (CartContext)
+│ │ ├── hooks/ # Reusable hooks (future ready)
+│ │ ├── types/ # Shared TypeScript types
+│ │ └── index.ts # Library exports
 │ │
-│ ├── demo/ ← demo ecommerce store
+│ ├── demo/ # Demo ecommerce implementation
 │ │ ├── pages/
 │ │ ├── data/
 │ │ └── App.tsx
 │ │
-│ ├── main.tsx ← runs demo
+│ ├── main.tsx
 │ └── index.css
 │
 ├── vite.config.ts
 ├── package.json
 └── README.md
+🎯 Core Concepts
+1️⃣ Library First Architecture
+
+Everything reusable lives inside:
+
+src/lib/
+
+The demo store simply consumes the library.
+
+This allows future:
+
+NPM publishing
+
+Design system extraction
+
+Multi-store usage
+
+White-label projects
+
+2️⃣ Cart System (Context API)
+
+Cart logic is centralized inside:
+
+lib/context/CartContext.tsx
+
+Features:
+
+Add to cart
+
+Open mini cart automatically
+
+Edit quantity
+
+Remove items
+
+Click outside to close
+
+Alert confirmation
+
+Usage:
+
+import { useCart } from "../lib"
+
+const { addToCart } = useCart()
+
+3️⃣ Layout System
+
+The Layout component:
+
+lib/components/layout/Layout.tsx
+
+Includes:
+
+Sticky Navbar
+
+Responsive design
+
+Mobile burger menu
+
+Dropdown selector
+
+Product card switcher
+
+Layout wraps the demo app and controls UI mode selection.
+
+4️⃣ Product Card Variants
+
+Two available product card designs:
+
+Default Card
+
+Image
+
+Name
+
+Price
+
+Select color
+
+Select size
+
+Add to cart
+
+Simple Card
+
+Image
+
+Name
+
+Price
+
+Color preview
+
+Add button
+
+Switch between them via Navbar dropdown.
+
+5️⃣ Responsive Design
+
+Grid behavior:
+
+📱 Mobile → 2 products per row
+
+💻 Desktop → 4 products per row
+
+Navbar:
+
+Sticky
+
+Desktop dropdown
+
+Mobile collapsible menu
+
+Mini Cart:
+
+Slide-in panel
+
+Closes on backdrop click
+
+Fully responsive
+
+🛠 Tech Stack
+
+React
+
+TypeScript
+
+Vite
+
+TailwindCSS
+
+Context API
+
+🚀 Getting Started
+Install dependencies
+npm install
+
+Run development server
+npm run dev
+
+📦 How To Use The Library Internally
+
+Wrap your app with CartProvider:
+
+<CartProvider>
+  <Layout>
+    {(selectedCard) => (
+      <YourProducts />
+    )}
+  </Layout>
+  <MiniCart />
+</CartProvider>
+
+Import components from:
+
+import {
+ProductCard,
+ProductCardSimple,
+MiniCart,
+Layout,
+CartProvider
+} from "../lib"
+
+🔥 Current Features
+
+Global cart state
+
+Mini cart auto-open
+
+Editable quantity
+
+Color selection
+
+Size selection
+
+Remove item
+
+Responsive layout
+
+Card type switching
+
+Clean separation between lib and demo
+
+🧠 Design Philosophy
+
+Mommerce UI follows:
+
+Reusability over duplication
+
+Separation of concerns
+
+Scalable folder structure
+
+UI-driven architecture
+
+Type-safe development
+
+Modular components
+
+📌 Git Workflow
+
+Recommended branches:
+
+main → stable
+dev → active development
+feature/\* → feature branches
+
+Example:
+
+git checkout dev
+git checkout -b feature/new-component
+
+🔮 Future Roadmap
+
+Product filtering & sorting
+
+PLP abstraction layer
+
+Checkout module
+
+Persistent cart (localStorage)
+
+Animations
+
+Dark mode
+
+Storybook integration
+
+NPM package publishing
+
+CI/CD pipeline
+
+Design tokens system
+
+🧩 Long-Term Vision
+
+Mommerce UI aims to evolve into:
+
+A production-ready ecommerce UI framework
+
+A reusable design system
+
+A component-driven commerce architecture
+
+A potential SaaS storefront toolkit
+
+👨‍💻 Author
+
+Work in progress — actively developing.
+
+📜 License
+
+Currently private / WIP.
